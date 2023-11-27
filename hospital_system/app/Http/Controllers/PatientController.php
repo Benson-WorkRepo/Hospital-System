@@ -65,4 +65,3 @@ class PatientController extends Controller
         return response()->json(['message' => 'Duration set successfully']);
     }
 }
-
