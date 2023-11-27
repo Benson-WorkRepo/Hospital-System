@@ -15,6 +15,7 @@ class PatientController extends Controller
 
         return view('queue.show', compact('queue'));
     }
+    
 
     public function joinQueue(Request $request, $patientNumber)
     {
