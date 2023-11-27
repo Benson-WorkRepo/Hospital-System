@@ -1,19 +1,39 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Dashboard')</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
-    @yield('content')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <div class = "welcomeBanner">
-    <h1>Welcome to Delivery Bora</h1>
-    <h3>Child delivery has been made easier</h3>
-</div>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue List</title>
+</head>
+<body>
+    <h1>Queue List</h1>
+
+    @if ($queue->isEmpty())
+        <p>No users in the queue.</p>
+    @else
+        <ul>
+            @foreach ($queue as $user)
+                <li>
+                    {{ $user->fName }} {{ $user->lName }} - ID: {{ $user->ID }}
+                    
+                    @if ($user->pregnancyStatus)
+                        (Already in the queue)
+                    @else
+                        <form method="POST" action="{{ route('joinQueue', ['patientNumber' => $user->patientnumber]) }}">
+                            @csrf
+                            <button type="submit">Join Queue</button>
+                        </form>
+                    @endif
+                    
+                    <form method="POST" action="{{ route('setDuration', ['patientNumber' => $user->patientnumber]) }}">
+                        @csrf
+                        <label for="duration">Set Duration (1-9): </label>
+                        <input type="number" name="duration" id="duration" min="1" max="9" required>
+                        <button type="submit">Set Duration</button>
+                    </form>
+                </li>
+            @endforeach
+        </ul>
+    @endif
+</body>
 </html>
-
-

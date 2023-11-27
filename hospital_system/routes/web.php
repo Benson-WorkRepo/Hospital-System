@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\signInFunction;
+use App\Http\Controllers\Docsignin;
+use App\Http\Controllers\PatientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +33,13 @@ Route::get('/', function(){
 
 Route::get('/adminlogin', [signInFunction::class, 'adminlogin']) ->name('adminlogin');
 Route::post('/adminlogin', [signInFunction::class, 'adminloginPost']) ->name('adminlogin.post');
+
+
+Route::post('/patient/set-duration/{patientNumber}', [PatientController::class, 'setDuration'])->name('setDuration');
+Route::get('/queue', [PatientController::class, 'showQueue'])->name('showQueue');
+Route::post('/patient/join-queue/{patientNumber}', [PatientController::class, 'joinQueue'])->name('joinQueue');
+Route::post('/patient/set-duration/{patientNumber}', [PatientController::class, 'setDuration'])->name('setDuration');
+
 
 
 Route::get('/logout',[signInFunction::class],'logout') ->name('logout');
