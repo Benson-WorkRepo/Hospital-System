@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\doctorcredentials;
 use App\Models\messaging; //use in other controllers
-class signInFunction extends Controller
+class Docsignin extends Controller
 {
     function adminloginPost(Request $request){
         $request->validate([
@@ -15,7 +15,7 @@ class signInFunction extends Controller
             'password'=> 'required',
         ]);
         $credentials = $request->only('workID','password');
-        if(Auth::attempt($credentials)){
+        if(Auth::guard('doc')->attempt($credentials)){
             return redirect()->intended(route('admindashboard'));
         }
         return redirect(route('adminlogin'))->with("error", "invalid credentials");

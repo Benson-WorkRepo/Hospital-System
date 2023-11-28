@@ -15,6 +15,7 @@ class signInFunction extends Controller
     function signup(){
         return view('signup');
     }
+    //show the admin login page
     function adminlogin(){
         return view('adminlogin');
     }

@@ -1,7 +1,3 @@
-@extends('admindashboard')
-@section('title', 'Admin Login')
-@section('content')
-
 <!DOCTYPE html>
 <html lang="en" >
 <head>
@@ -168,4 +164,3 @@ button {
   <button type="submit" class="submitButton">Submit</button>
 </form>
     </div>
-@endsection

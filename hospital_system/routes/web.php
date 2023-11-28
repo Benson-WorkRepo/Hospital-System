@@ -31,8 +31,10 @@ Route::get('/', function(){
     return view('dashboard');
 })->name('admindashboard');
 
+//showing the login form
 Route::get('/adminlogin', [signInFunction::class, 'adminlogin']) ->name('adminlogin');
-Route::post('/adminlogin', [signInFunction::class, 'adminloginPost']) ->name('adminlogin.post');
+//handle the adminlogin data
+Route::post('/adminloginpost', [Docsignin::class, 'adminloginPost']) ->name('adminlogin.post');
 
 
 Route::post('/patient/set-duration/{patientNumber}', [PatientController::class, 'setDuration'])->name('setDuration');
