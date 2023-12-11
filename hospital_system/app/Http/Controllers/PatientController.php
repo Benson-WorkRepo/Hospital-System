@@ -15,17 +15,16 @@ class PatientController extends Controller
 
         return view('queue.show', compact('queue'));
     }
-    
 
-    public function joinQueue(Request $request, $patientNumber)
+    public function joinQueue(Request $request, $patientId)
     {
         // Validate the request if needed
         $request->validate([
             'join_queue' => 'required|boolean',
         ]);
 
-        // Find the user by patient number
-        $user = CustomerCredentials::where('patientnumber', $patientNumber)->first();
+        // Find the user by ID
+        $user = CustomerCredentials::find($patientId);
 
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
@@ -46,15 +45,15 @@ class PatientController extends Controller
         return response()->json(['message' => 'Invalid request'], 400);
     }
 
-    public function setDuration(Request $request, $patientNumber)
+    public function setDuration(Request $request, $patientId)
     {
         // Validate the request if needed
         $request->validate([
             'duration' => 'required|integer|between:1,9',
         ]);
 
-        // Find the user by patient number
-        $user = CustomerCredentials::where('patientnumber', $patientNumber)->first();
+        // Find the user by ID
+        $user = CustomerCredentials::find($patientId);
 
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);

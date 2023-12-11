@@ -15,6 +15,6 @@ class WardSeeder extends Seeder
      */
     public function run()
     {
-        Ward::factory()->count(5)->create();
+        Ward::factory()->count(2)->create();
     }
 }
