@@ -27,9 +27,12 @@ Route::get('/signup', [signInFunction::class, 'signup']) ->name('signup');
 Route::post('/signup', [signInFunction::class, 'signupPost']) ->name('signup.post');
 
 
-Route::get('/', function(){
-    return view('dashboard');
-})->name('admindashboard');
+// Route::get('/', function(){
+//     return view('admindashboard');
+// })->name('admindashboard');
+
+Route::get('/', [PatientController::class, 'showQueue'])->name('admindashboard');
+
 
 //showing the login form
 Route::get('/adminlogin', [signInFunction::class, 'adminlogin']) ->name('adminlogin');
