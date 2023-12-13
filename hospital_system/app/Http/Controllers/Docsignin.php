@@ -16,8 +16,12 @@ class Docsignin extends Controller
         ]);
         $credentials = $request->only('workID','password');
         if(Auth::guard('doc')->attempt($credentials)){
+           dd();
             return redirect()->intended(route('admindashboard'));
-        }
-        return redirect(route('adminlogin'))->with("error", "invalid credentials");
+        }dd();
+        return redirect(route('adminlogin'))->withErrors("error", "invalid credentials");
+    }
+    function adminlogin(){
+        return view('adminlogin');
     }
 }

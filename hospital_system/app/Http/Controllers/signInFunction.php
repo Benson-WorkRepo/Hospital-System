@@ -16,9 +16,8 @@ class signInFunction extends Controller
         return view('signup');
     }
     //show the admin login page
-    function adminlogin(){
-        return view('adminlogin');
-    }
+    
+    
     function loginPost(Request $request){
         $request->validate([
             'ID' =>'required',
@@ -55,7 +54,7 @@ class signInFunction extends Controller
     }
     
     function logout(){
-        Session::flush();
+       // Session::flush();
         Auth::logout();
         return redirect(route('login'));
     }

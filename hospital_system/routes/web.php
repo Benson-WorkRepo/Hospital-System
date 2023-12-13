@@ -26,24 +26,22 @@ Route::post('/login', [signInFunction::class, 'loginPost']) ->name('login.post')
 Route::get('/signup', [signInFunction::class, 'signup']) ->name('signup');
 Route::post('/signup', [signInFunction::class, 'signupPost']) ->name('signup.post');
 
+Route::get('/admindashboard', [PatientController::class, 'searchPatients'])->name('admindashboard');
 
-// Route::get('/', function(){
-//     return view('admindashboard');
-// })->name('admindashboard');
 
-Route::get('/', [PatientController::class, 'showQueue'])->name('admindashboard');
+Route::get('/', [PatientController::class, 'searchPatients'])->name('admindashboard');
 
 
 //showing the login form
-Route::get('/adminlogin', [signInFunction::class, 'adminlogin']) ->name('adminlogin');
+Route::get('/adminlogin', [Docsignin::class, 'adminlogin']) ->name('adminlogin');
 //handle the adminlogin data
 Route::post('/adminloginpost', [Docsignin::class, 'adminloginPost']) ->name('adminlogin.post');
 
 
-Route::post('/patient/set-duration/{patientNumber}', [PatientController::class, 'setDuration'])->name('setDuration');
-Route::get('/queue', [PatientController::class, 'showQueue'])->name('showQueue');
-Route::post('/patient/join-queue/{patientNumber}', [PatientController::class, 'joinQueue'])->name('joinQueue');
-Route::post('/patient/set-duration/{patientNumber}', [PatientController::class, 'setDuration'])->name('setDuration');
+Route::post('/admindashboard', [PatientController::class, 'setDuration'])->name('setDuration');
+Route::get('/admindashboard', [PatientController::class, 'togglePregnancyStatus'])->name('ogglePregnancyStatus');
+Route::post('/admindashboard', [PatientController::class, 'assignWardAndBed'])->name('assignWardAndBed');
+Route::post('admindashboard', [PatientController::class, 'removeUser'])->name('removeUser');
 
 
 

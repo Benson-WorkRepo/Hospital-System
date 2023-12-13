@@ -4,64 +4,90 @@
 namespace App\Http\Controllers;
 
 use App\Models\CustomerCredentials;
+use App\Models\ward_credentials;
+use App\Models\pregnancyinfo;
 use Illuminate\Http\Request;
 
 class PatientController extends Controller
 {
-    public function showQueue()
-    {
-        // Fetch the list of users in the queue
-        $queue = CustomerCredentials::where('pregnancyStatus', true)->get();
+    // ... other methods ...
 
-        return view('queue.show', compact('queue'));
+    public function searchPatients(Request $request)
+    {
+        $status = $request->input('status', 'false'); // default to false if not provided
+        $patients = CustomerCredentials::where('pregnancyStatus', $status)->get();
+
+        return view('admindashboard', compact('patients')); // Update the view name accordingly
     }
 
-    public function joinQueue(Request $request, $patientId)
+    public function togglePregnancyStatus($patientId)
     {
-        // Validate the request if needed
-        $request->validate([
-            'join_queue' => 'required|boolean',
-        ]);
-
-        // Find the user by ID
         $user = CustomerCredentials::find($patientId);
 
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        // Check if the user is already in the queue
+        // Toggle pregnancyStatus
+        $user->update(['pregnancyStatus' => !$user->pregnancyStatus]);
+
         if ($user->pregnancyStatus) {
-            return response()->json(['message' => 'User is already in the queue'], 400);
+            // If set to true, add to PregnancyInfo table
+            pregnancyinfo::create([
+                'ID' => $user->ID,
+                'Duration' => $user->duration, // assuming duration is set for the user
+                'ward' => null, // set to null initially, to be updated later
+                'bedNo' => null, // set to null initially, to be updated later
+            ]);
+
+            // Add to WardCredentials table
+            ward_credentials::create([
+                'ID' => $user->ID,
+                'ward' => null, // set to null initially, to be updated later
+                'bedNo' => null, // set to null initially, to be updated later
+                'vacancy' => true, // assuming it's vacant initially
+            ]);
         }
 
-        // Update the pregnancyStatus to true if the request is true
-        if ($request->input('join_queue')) {
-            $user->update(['pregnancyStatus' => true]);
-
-            return response()->json(['message' => 'User joined the queue successfully']);
-        }
-
-        return response()->json(['message' => 'Invalid request'], 400);
+        return response()->json(['message' => 'Pregnancy status toggled successfully']);
     }
 
-    public function setDuration(Request $request, $patientId)
+    public function assignWardAndBed($patientId, $ward, $bedNo)
     {
-        // Validate the request if needed
-        $request->validate([
-            'duration' => 'required|integer|between:1,9',
-        ]);
-
-        // Find the user by ID
         $user = CustomerCredentials::find($patientId);
 
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        // Set the duration for the user
-        $user->update(['duration' => $request->input('duration')]);
+        // Update PregnancyInfo table
+        pregnancyinfo::where('ID', $user->ID)
+            ->update(['ward' => $ward, 'bedNo' => $bedNo]);
 
-        return response()->json(['message' => 'Duration set successfully']);
+        // Update WardCredentials table
+        ward_credentials::where('ID', $user->ID)
+            ->update(['ward' => $ward, 'bedNo' => $bedNo, 'vacancy' => false]);
+
+        return response()->json(['message' => 'Ward and Bed assigned successfully']);
+    }
+
+    public function removeUser($patientId)
+    {
+        $user = CustomerCredentials::find($patientId);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Remove from PregnancyInfo table
+        pregnancyinfo::where('ID', $user->ID)->delete();
+
+        // Remove from WardCredentials table
+        ward_credentials::where('ID', $user->ID)->delete();
+
+        // Remove from CustomerCredentials table
+        $user->delete();
+
+        return response()->json(['message' => 'User removed successfully']);
     }
 }
